@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import logging
 
-cap = cv2.VideoCapture('/home/ydbondt/Downloads/IMG_0607-non-HEVC.mov')
-fourcc = cv2.cv.CV_FOURCC(*'DIVX')
+cap = cv2.VideoCapture('/home/christoph/Downloads/IMG_0607-non-HEVC.mov')
+fourcc = cv2.VideoWriter_fourcc(*'DIVX')
 
 if (cap.isOpened() == False):
     print("Error")
@@ -22,7 +22,7 @@ while (cap.isOpened() == True):
 
         rangeMask = cv2.inRange(hsv, lower_orange, upper_orange)
 
-        contours, hierarchy = cv2.findContours(rangeMask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE);
+        image, contours, hierarchy = cv2.findContours(rangeMask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE);
 
         for c in contours:
             M = cv2.moments(c)
