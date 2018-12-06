@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import logging
 
-cap = cv2.VideoCapture('/home/ydbondt/Downloads/IMG_0607-non-HEVC.mov')
-fourcc = cv2.cv.CV_FOURCC(*'DIVX')
+cap = cv2.VideoCapture('IMG_0607-non-HEVC.mov')
+fourcc = cv2.VideoWriter_fourcc(*'DIVX')
 
 if (cap.isOpened() == False):
     print("Error")
@@ -13,7 +13,8 @@ out = cv2.VideoWriter('output.avi', fourcc, 20.0, (first_frame.shape[1], first_f
 
 history_points = []
 while (cap.isOpened() == True):
-    ret, frame = cap.read()
+    ret, img = cap.read()
+    frame = cv2.UMat(img)
     if ret == True:
         
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -22,7 +23,7 @@ while (cap.isOpened() == True):
 
         rangeMask = cv2.inRange(hsv, lower_orange, upper_orange)
 
-        contours, hierarchy = cv2.findContours(rangeMask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE);
+        image, contours, hierarchy = cv2.findContours(rangeMask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE);
 
         for c in contours:
             M = cv2.moments(c)
@@ -42,8 +43,8 @@ while (cap.isOpened() == True):
             cv2.line(frame, prev_point, p, (0,255,0), 2)
             prev_point = p
 
-        out.write(frame)
-        cv2.imshow('Frame', frame);
+        out.write(img)
+        cv2.imshow('Frame', img);
 
         if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
             break
