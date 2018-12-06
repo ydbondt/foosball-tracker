@@ -2,6 +2,12 @@ import cv2
 import numpy as np
 import logging
 
+if cv2.ocl.haveOpenCL():
+    cv2.ocl.setUseOpenCL(True)
+    print("OpenCL enabled: ", cv2.ocl.useOpenCL())
+else:
+    print("OpenCL not available")
+
 cap = cv2.VideoCapture('IMG_0607-non-HEVC.mov')
 fourcc = cv2.VideoWriter_fourcc(*'DIVX')
 
