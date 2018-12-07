@@ -50,11 +50,15 @@ def drawHistoryPoints(img, history_points):
             cv2.line(img, pp, p, (0, 255, 0), 2)
         pp = p
 
+num_frames = 0
+num_optim_frames = 0
 
 while (cap.isOpened() == True):
     ret, img = cap.read()
     if ret == True:
         origin = None
+
+        num_frames += 1
 
         if next_point is not None:
             origin = (max(0, next_point[0] - (subframe_size >> 1)), max(0, next_point[1] - (subframe_size >> 1)))
@@ -64,6 +68,7 @@ while (cap.isOpened() == True):
             if point is None:
                 point = processFrame(img, prev_point)
             else:
+                num_optim_frames += 1
                 point = (point[0] + origin[0], point[1] + origin[1])
         else:
             origin = (0,0)
@@ -74,7 +79,6 @@ while (cap.isOpened() == True):
             next_point = None
         else:
             if prev_point is not None:
-                cv2.line(img, prev_point, point, (0, 255, 0), 2)
                 next_point = (point[0] * 2 - prev_point[0], point[1] * 2 - prev_point[1])
                 if next_point[0] < 0 or next_point[0] > len(img[0]) or next_point[1] < 0 or next_point[1] > len(img):
                     next_point = point
@@ -95,3 +99,5 @@ while (cap.isOpened() == True):
 cap.release()
 # out.release()
 cv2.destroyAllWindows()
+
+print("Processed ", + num_frames, " of which ", num_optim_frames, " were adequately predicted")
